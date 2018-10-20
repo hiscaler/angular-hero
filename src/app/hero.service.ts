@@ -30,7 +30,7 @@ export class HeroService {
   getHeroes(): Observable<Hero[]> {
     this.messageService.add("HeroService: fetched heroes");
     return this.http.get<Hero[]>(this.heroesUrl).pipe(
-      tap(heroes => this.log('fetched heroes')),
+      tap(_ => this.log('fetched heroes')),
       catchError(this.handleError('getHeroes', []))
     );
   }
@@ -47,10 +47,27 @@ export class HeroService {
     )
   }
 
+  addHero(hero: Hero): Observable<any> {
+    return this.http.post<Hero>(this.heroesUrl, hero, httpOptions).pipe(
+      tap((hero: Hero) => this.log(`added hero id=${hero.id}`)),
+      catchError(this.handleError<Hero>('addHero'))
+    );
+  }
+
   updateHero(hero: Hero): Observable<any> {
     return this.http.put(this.heroesUrl, hero, httpOptions).pipe(
       tap(_ => this.log(`updated hero id=${hero.id}`)),
       catchError(this.handleError<any>('updatedHero'))
+    );
+  }
+
+  deleteHero(hero: Hero|number): Observable<any> {
+    const id = typeof hero === 'number' ? hero : hero.id;
+    const url = `${this.heroesUrl}/${id}`;
+
+    return this.http.delete<Hero>(url, httpOptions).pipe(
+      tap(_ => this.log(`deleted hero id=${id}`)),
+      catchError(this.handleError<any>('deletedHero'))
     );
   }
 
