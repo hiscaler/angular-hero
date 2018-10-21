@@ -14,11 +14,15 @@ export class HeroSearchComponent implements OnInit {
   heroes$: Observable<Hero[]>;
   private searchTerms = new Subject<string>();
 
-
   constructor(private heroService: HeroService) {
   }
 
   ngOnInit() {
+    this.heroes$ = this.searchTerms.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => this.heroService.searchHeroes(term)),
+    );
   }
 
   search(term: string): void {

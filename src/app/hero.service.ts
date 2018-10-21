@@ -71,7 +71,7 @@ export class HeroService {
     );
   }
 
-  searchHeroes(term: stringn): Observable<Hero[]> {
+  searchHeroes(term: string): Observable<Hero[]> {
     if (!term.trim()) {
       return of([]);
     }
@@ -81,15 +81,10 @@ export class HeroService {
     );
   }
 
-
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
-      this.log(`
-  ${operation}
-  failed:
-  ${error.message}
-`);
+      this.log(`${operation} failed: ${error.message}`);
       return of(result as T);
     }
   }
